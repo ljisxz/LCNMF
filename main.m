@@ -63,15 +63,16 @@ clc
      
  end
  % Final averaged performance over 20 runs
-    meanAC=mean(TempAC);
-    meanMI=mean(TempMI);
-    meanACdiv=mean(TempACdiv);
-    meanMIdiv=mean(TempMIdiv);
-%     stdAC=std(TempAC);
-%     stdMI=std(TempMI);
+    meanAC=mean(TempAC)
+    meanMI=mean(TempMI)
+    meanACdiv=mean(TempACdiv)
+    meanMIdiv=mean(TempMIdiv)
+%   stdAC=std(TempAC);
+%   stdMI=std(TempMI);
 
  
  
     
 
  
+
