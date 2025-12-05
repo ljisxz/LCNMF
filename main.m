@@ -1,6 +1,6 @@
 clear all 
 clc
- load('COIL100_Obj.mat');	
+ load('COIL100_Obj.mat');	% Load feature matrix (fea) and labels (gnd)
  nClass = length(unique(gnd));
  dataset='COIL100_Obj';      
  fea=double(fea);
@@ -12,10 +12,10 @@ clc
  fea=double(fea);
  
  %Unit Euclidean length normalization
- fea = NormalizeFea(fea); 
+ fea = NormalizeFea(fea);  % Normalize in Euclidean length
 
- LabelsRatio=0.1;
- K=nClass; %full-size dataset as input data  
+ LabelsRatio=0.1; % labeled, semi-supervised setting
+ K=nClass; % Number of clusters = number of ground truth classes
  meanAC=[];
  meanMI=[];
  meanACdiv=[];
@@ -27,17 +27,20 @@ clc
   TempACdiv=[];
   TempMIdiv=[];
   for h=1:20
-     %Select the data points of K classes as the input of the algorithm
+      % Randomly select sample subset for training
      [X,Smpgnd,count]=CreatSampleDatasets(fea,K,gnd,nClass,LabelsRatio);
      % X:selected data points belong to K Classes
      % Smpgnd: the lables of selected data points
      % count: the number of selected data points
+     % Configure algorithm parameters
      Options.maxIter=200;
      Options.gndSmpNum=count;
      Options.Smpgnd=Smpgnd;
      Options.KClass=K;
      Options.nClass=nClass;
-     %LCNMF
+      % -------------------------------------------
+     %  Run LCNMF
+     % -------------------------------------------
      [~,V,~]=LCNMF(X',Options);
      [~, label] = max(V');
      newL=bestMap(Smpgnd,label);
@@ -45,7 +48,9 @@ clc
      MIhat = MutualInfo(Smpgnd,label);  
      TempAC(h)=AC;% accuracy.acc;
      TempMI(h)=MIhat;% accuracy.nmi;
-     %LCNMF-div
+     % -------------------------------------------
+     %  Run LCNMF-div
+     % -------------------------------------------
      [~,V,~]=LCNMFdiv(X',Options);
      [~, label] = max(V');
      newL=bestMap(Smpgnd,label);
@@ -57,6 +62,7 @@ clc
      
      
  end
+ % Final averaged performance over 20 runs
     meanAC=mean(TempAC);
     meanMI=mean(TempMI);
     meanACdiv=mean(TempACdiv);
@@ -67,4 +73,5 @@ clc
  
  
     
+
  
